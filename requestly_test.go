@@ -13,9 +13,15 @@ func TestSpec(t *testing.T) {
 		body := `{"key":"value"}`
 
 		Convey("GetJSON", func() {
-			res, err := GetJSON(req, "https://httpbin.org/get")
-			So(err, ShouldBeNil)
-			So(res.Get("url").String(), ShouldResemble, "https://httpbin.org/get")
+			Convey("Success", func() {
+				res, err := GetJSON(req, "https://httpbin.org/get")
+				So(err, ShouldBeNil)
+				So(res.Get("url").String(), ShouldResemble, "https://httpbin.org/get")
+			})
+			Convey("Failure", func() {
+				_, err := GetJSON(req, "https://xxxxxx.org/get")
+				So(err, ShouldBeError)
+			})
 		})
 
 		Convey("DeleteJSON", func() {
