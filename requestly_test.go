@@ -68,6 +68,10 @@ func TestSpec(t *testing.T) {
 					method := res.FindElement("/response/method").Text()
 					So(method, ShouldResemble, "GET")
 				})
+				Convey("Failure", func() {
+					_, err := GetXML(req, "https://xxxxxx.org/get")
+					So(err, ShouldBeError)
+				})
 			})
 
 			Convey("DeleteXML", func() {
