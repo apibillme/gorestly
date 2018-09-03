@@ -16,7 +16,7 @@ req.Header.Add("Authorization", "Bearer my_token")
 
 jsonBody := `{"key":"value"}`
 
-xmlBody := `<?xml version="1.0" encoding="UTF-8"?><People><Person name="Jon"/><Person name="Sally"/></People></xml>`
+xmlBody := `<?xml version="1.0" encoding="UTF-8"?><People><Person name="Jon"/></People></xml>`
 
 res, err := requestly.GetJSON(req, "https://mockbin.com/request")
 	
