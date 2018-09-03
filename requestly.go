@@ -23,7 +23,7 @@ func request(req *fasthttp.Request, uri string) (gjson.Result, error) {
 
 func setJSONRequest(req *fasthttp.Request, method string, body string) *fasthttp.Request {
 	req.Header.SetCanonical([]byte("Content-Type"), []byte("application/json"))
-	req.Header.Set("accept", "application/json")
+	req.Header.Set("Accept", "application/json")
 	req.Header.SetMethodBytes([]byte(method))
 	req.SetBodyString(body)
 	return req
