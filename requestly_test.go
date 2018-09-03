@@ -68,8 +68,12 @@ func TestSpec(t *testing.T) {
 					method := res.FindElement("/response/method").Text()
 					So(method, ShouldResemble, "GET")
 				})
-				Convey("Failure", func() {
+				Convey("Failure Host", func() {
 					_, err := GetXML(req, "https://xxxxxx.org/get")
+					So(err, ShouldBeError)
+				})
+				Convey("Failure Stream", func() {
+					_, err := GetXML(req, "https://github.com/apibillme/requestly")
 					So(err, ShouldBeError)
 				})
 			})
