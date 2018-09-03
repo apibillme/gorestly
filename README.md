@@ -1,4 +1,4 @@
-# Requestly - Fast REST Client library for Go (golang)
+# Requestly - Fast REST Client for Go (golang)
 
 [![Go Report](https://goreportcard.com/badge/github.com/apibillme/requestly)](https://goreportcard.com/report/github.com/apibillme/requestly) [![Travis](https://travis-ci.org/apibillme/requestly.svg?branch=master)](https://travis-ci.org/apibillme/requestly#) [![codecov](https://codecov.io/gh/apibillme/requestly/branch/master/graph/badge.svg)](https://codecov.io/gh/apibillme/requestly) ![License](https://img.shields.io/github/license/mashape/apistatus.svg) ![Maintenance](https://img.shields.io/maintenance/yes/2018.svg) [![GoDoc](https://godoc.org/github.com/apibillme/requestly?status.svg)](https://godoc.org/github.com/apibillme/requestly)
 
