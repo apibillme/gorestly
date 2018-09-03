@@ -278,9 +278,14 @@ func (c *Cookie) ParseBytes(src []byte) error {
 		switch string(kv.key) {
 		case "expires":
 			v := b2s(kv.value)
+			// Try the same two formats as net/http
+			// See: https://github.com/golang/go/blob/00379be17e63a5b75b3237819392d2dc3b313a27/src/net/http/cookie.go#L133-L135
 			exptime, err := time.ParseInLocation(time.RFC1123, v, time.UTC)
 			if err != nil {
-				return err
+				exptime, err = time.Parse("Mon, 02-Jan-2006 15:04:05 MST", v)
+				if err != nil {
+					return err
+				}
 			}
 			c.expire = exptime
 		case "domain":
@@ -321,6 +326,19 @@ func appendRequestCookieBytes(dst []byte, cookies []argsKV) []byte {
 			dst = append(dst, kv.key...)
 			dst = append(dst, '=')
 		}
+		dst = append(dst, kv.value...)
+		if i+1 < n {
+			dst = append(dst, ';', ' ')
+		}
+	}
+	return dst
+}
+
+// For Response we can not use the above function as response cookies
+// already contain the key= in the value.
+func appendResponseCookieBytes(dst []byte, cookies []argsKV) []byte {
+	for i, n := 0, len(cookies); i < n; i++ {
+		kv := &cookies[i]
 		dst = append(dst, kv.value...)
 		if i+1 < n {
 			dst = append(dst, ';', ' ')

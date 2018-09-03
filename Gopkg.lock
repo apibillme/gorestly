@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:f25dfe4538112147d22e4c8437efbc2e216112bec37277534ffe146935064ea8"
+  branch = "master"
+  digest = "1:67c8fd38cd67297657a32ef729a12795bb4c263cfa3e15fa5c2de255e9339670"
   name = "github.com/beevik/etree"
   packages = ["."]
   pruneopts = "UT"
-  revision = "9d7e8feddccb4ed1b8afb54e368bd323d2ff652c"
-  version = "v1.0.1"
+  revision = "90dafc1e1f114dfb9576218bb43c03fb854d1b34"
 
 [[projects]]
   branch = "master"
@@ -94,7 +94,8 @@
   revision = "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7"
 
 [[projects]]
-  digest = "1:15ad8a80098fcc7a194b9db6b26d74072a852e4faa957848c8118193d3c69230"
+  branch = "master"
+  digest = "1:8066a252d58407b9154eebb581900d36584eca5562846bad8422175bde0358ca"
   name = "github.com/valyala/fasthttp"
   packages = [
     ".",
@@ -102,8 +103,7 @@
     "stackless",
   ]
   pruneopts = "UT"
-  revision = "e5f51c11919d4f66400334047b897ef0a94c6f3c"
-  version = "v20180529"
+  revision = "d7688109a57b030752c3d45b1a95cb7d6b8eee96"
 
 [solve-meta]
   analyzer-name = "dep"
