@@ -39,7 +39,7 @@ func requestJSON(req *fasthttp.Request, uri string) (gjson.Result, error) {
 }
 
 func setJSONRequest(req *fasthttp.Request, method string, body string) *fasthttp.Request {
-	req.Header.SetCanonical([]byte("Content-Type"), []byte("application/json"))
+	req.Header.SetCanonical([]byte("Content-Type"), []byte("application/problem+json"))
 	req.Header.Set("Accept", "application/json")
 	req.Header.SetMethodBytes([]byte(method))
 	req.SetBodyString(body)
@@ -47,7 +47,7 @@ func setJSONRequest(req *fasthttp.Request, method string, body string) *fasthttp
 }
 
 func setXMLRequest(req *fasthttp.Request, method string, body string) *fasthttp.Request {
-	req.Header.SetCanonical([]byte("Content-Type"), []byte("application/xml"))
+	req.Header.SetCanonical([]byte("Content-Type"), []byte("application/problem+xml"))
 	req.Header.Set("Accept", "application/xml")
 	req.Header.SetMethodBytes([]byte(method))
 	req.SetBodyString(body)

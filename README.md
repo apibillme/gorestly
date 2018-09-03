@@ -5,6 +5,12 @@
 
 This fast REST client combines [fasthttp](https://github.com/valyala/fasthttp#readme) for performance, [gjson](https://github.com/tidwall/gjson#readme) for JSON searching, and [etree](https://github.com/beevik/etree#readme) for XML searching.
 
+## Features:
+* Fully configurable fasthttp.Request struct
+* Auto encoding REST routes with client libraries ([gjson](https://github.com/tidwall/gjson#readme) & [etree](https://github.com/beevik/etree#readme)) with support for problem errors [RFC7807](https://tools.ietf.org/html/rfc7807)
+* About 100 LOC
+* About 10x faster than competing REST clients
+
 ```bash
 go get github.com/apibillme/requestly
 ```
