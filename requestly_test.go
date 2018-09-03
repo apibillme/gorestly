@@ -3,6 +3,8 @@ package requestly
 import (
 	"testing"
 
+	"github.com/tidwall/gjson"
+
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -14,9 +16,9 @@ func TestSpec(t *testing.T) {
 
 		Convey("GetJSON", func() {
 			Convey("Success", func() {
-				res, err := GetJSON(req, "https://httpbin.org/get")
+				res, err := GetJSON(req, "https://mockbin.com/request")
 				So(err, ShouldBeNil)
-				So(res.Get("url").String(), ShouldResemble, "https://httpbin.org/get")
+				So(res.Get("method").String(), ShouldResemble, "GET")
 			})
 			Convey("Failure", func() {
 				_, err := GetJSON(req, "https://xxxxxx.org/get")
@@ -25,30 +27,33 @@ func TestSpec(t *testing.T) {
 		})
 
 		Convey("DeleteJSON", func() {
-			res, err := DeleteJSON(req, "https://httpbin.org/delete")
+			res, err := DeleteJSON(req, "https://mockbin.com/request")
 			So(err, ShouldBeNil)
-			So(res.Get("url").String(), ShouldResemble, "https://httpbin.org/delete")
+			So(res.Get("method").String(), ShouldResemble, "DELETE")
 		})
 
 		Convey("PutJSON", func() {
-			res, err := PutJSON(req, "https://httpbin.org/put", body)
+			res, err := PutJSON(req, "https://mockbin.com/request", body)
 			So(err, ShouldBeNil)
-			So(res.Get("url").String(), ShouldResemble, "https://httpbin.org/put")
-			So(res.Get("json.key").String(), ShouldResemble, "value")
+			So(res.Get("method").String(), ShouldResemble, "PUT")
+			extraParsing := gjson.Parse(res.Get("postData.text").String())
+			So(extraParsing.Get("key").String(), ShouldResemble, "value")
 		})
 
 		Convey("PostJSON", func() {
-			res, err := PostJSON(req, "https://httpbin.org/post", body)
+			res, err := PostJSON(req, "https://mockbin.com/request", body)
 			So(err, ShouldBeNil)
-			So(res.Get("url").String(), ShouldResemble, "https://httpbin.org/post")
-			So(res.Get("json.key").String(), ShouldResemble, "value")
+			So(res.Get("method").String(), ShouldResemble, "POST")
+			extraParsing := gjson.Parse(res.Get("postData.text").String())
+			So(extraParsing.Get("key").String(), ShouldResemble, "value")
 		})
 
 		Convey("PatchJSON", func() {
-			res, err := PatchJSON(req, "https://httpbin.org/patch", body)
+			res, err := PatchJSON(req, "https://mockbin.com/request", body)
 			So(err, ShouldBeNil)
-			So(res.Get("url").String(), ShouldResemble, "https://httpbin.org/patch")
-			So(res.Get("json.key").String(), ShouldResemble, "value")
+			So(res.Get("method").String(), ShouldResemble, "PATCH")
+			extraParsing := gjson.Parse(res.Get("postData.text").String())
+			So(extraParsing.Get("key").String(), ShouldResemble, "value")
 		})
 	})
 }
