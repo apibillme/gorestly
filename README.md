@@ -1,6 +1,6 @@
-# Restly - Fast REST client for Go (golang)
+# gorestly - Fast REST client for Go (golang)
 
-[![Go Report](https://goreportcard.com/badge/github.com/apibillme/restly)](https://goreportcard.com/report/github.com/apibillme/restly) [![GolangCI](https://golangci.com/badges/github.com/apibillme/restly.svg)](https://golangci.com/r/github.com/apibillme/restly) [![Travis](https://travis-ci.org/apibillme/restly.svg?branch=master)](https://travis-ci.org/apibillme/restly#) [![codecov](https://codecov.io/gh/apibillme/restly/branch/master/graph/badge.svg)](https://codecov.io/gh/apibillme/restly) ![License](https://img.shields.io/github/license/mashape/apistatus.svg) ![Maintenance](https://img.shields.io/maintenance/yes/2018.svg) [![GoDoc](https://godoc.org/github.com/apibillme/restly?status.svg)](https://godoc.org/github.com/apibillme/restly)
+[![Go Report](https://goreportcard.com/badge/github.com/apibillme/gorestly)](https://goreportcard.com/report/github.com/apibillme/gorestly) [![GolangCI](https://golangci.com/badges/github.com/apibillme/gorestly.svg)](https://golangci.com/r/github.com/apibillme/gorestly) [![Travis](https://travis-ci.org/apibillme/gorestly.svg?branch=master)](https://travis-ci.org/apibillme/gorestly#) [![codecov](https://codecov.io/gh/apibillme/gorestly/branch/master/graph/badge.svg)](https://codecov.io/gh/apibillme/gorestly) ![License](https://img.shields.io/github/license/mashape/apistatus.svg) ![Maintenance](https://img.shields.io/maintenance/yes/2018.svg) [![GoDoc](https://godoc.org/github.com/apibillme/gorestly?status.svg)](https://godoc.org/github.com/apibillme/gorestly)
 
 
 This fast REST client combines [fasthttp](https://github.com/valyala/fasthttp#readme) for performance, [gjson](https://github.com/tidwall/gjson#readme) for JSON searching, and [etree](https://github.com/beevik/etree#readme) for XML searching.
@@ -12,11 +12,11 @@ This fast REST client combines [fasthttp](https://github.com/valyala/fasthttp#re
 * About 10x faster than competing REST clients
 
 ```bash
-go get github.com/apibillme/restly
+go get github.com/apibillme/gorestly
 ```
 
 ```go
-req := restly.New()
+req := gorestly.New()
 
 req.Header.Add("Authorization", "Bearer my_token")
 
@@ -24,25 +24,25 @@ jsonBody := `{"key":"value"}`
 
 xmlBody := `<?xml version="1.0" encoding="UTF-8"?><People><Person name="Jon"/></People></xml>`
 
-res, err := restly.GetJSON(req, "https://mockbin.com/request")
+res, err := gorestly.GetJSON(req, "https://mockbin.com/request")
 	
-res, err := restly.DeleteJSON(req, "https://mockbin.com/request")
+res, err := gorestly.DeleteJSON(req, "https://mockbin.com/request")
 	
-res, err := restly.PutJSON(req, "https://mockbin.com/request", jsonBody)
+res, err := gorestly.PutJSON(req, "https://mockbin.com/request", jsonBody)
 	
-res, err := restly.PostJSON(req, "https://mockbin.com/request", jsonBody)
+res, err := gorestly.PostJSON(req, "https://mockbin.com/request", jsonBody)
 	
-res, err := restly.PatchJSON(req, "https://mockbin.com/request", jsonBody)
+res, err := gorestly.PatchJSON(req, "https://mockbin.com/request", jsonBody)
 
-res, err := restly.GetXML(req, "https://mockbin.com/request")
+res, err := gorestly.GetXML(req, "https://mockbin.com/request")
 	
-res, err := restly.DeleteXML(req, "https://mockbin.com/request")
+res, err := gorestly.DeleteXML(req, "https://mockbin.com/request")
 	
-res, err := restly.PutXML(req, "https://mockbin.com/request", xmlBody)
+res, err := gorestly.PutXML(req, "https://mockbin.com/request", xmlBody)
 	
-res, err := restly.PostXML(req, "https://mockbin.com/request", xmlBody)
+res, err := gorestly.PostXML(req, "https://mockbin.com/request", xmlBody)
 	
-res, err := restly.PatchXML(req, "https://mockbin.com/request", xmlBody)
+res, err := gorestly.PatchXML(req, "https://mockbin.com/request", xmlBody)
 ```
 
 ## Motivation

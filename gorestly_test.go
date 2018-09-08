@@ -1,4 +1,4 @@
-package restly
+package gorestly
 
 import (
 	"testing"
@@ -73,7 +73,7 @@ func TestSpec(t *testing.T) {
 					So(err, ShouldBeError)
 				})
 				Convey("Failure Stream", func() {
-					_, err := GetXML(req, "https://github.com/apibillme/restly")
+					_, err := GetXML(req, "https://github.com/apibillme/gorestly")
 					So(err, ShouldBeError)
 				})
 			})
