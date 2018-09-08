@@ -1,4 +1,4 @@
-package requestly
+package restly
 
 import (
 	"github.com/tidwall/gjson"
