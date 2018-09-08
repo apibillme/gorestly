@@ -9,7 +9,7 @@ This fast REST client combines [fasthttp](https://github.com/valyala/fasthttp#re
 * Fully configurable fasthttp.Request struct
 * Auto encoding REST routes with client libraries ([gjson](https://github.com/tidwall/gjson#readme) & [etree](https://github.com/beevik/etree#readme)) with support for problem errors [RFC7807](https://tools.ietf.org/html/rfc7807)
 * About 100 LOC
-* About 10x faster than competing REST clients
+* About 10x faster than using net/http
 
 ```bash
 go get github.com/apibillme/gorestly
@@ -54,8 +54,3 @@ I wanted a one-liner request with the ability to dynamically set, find, and extr
 The request body is simply a string and the find/extract interface relies on battle-tested libraries for either JSON ([gjson](https://github.com/tidwall/gjson#readme)) or XML ([etree](https://github.com/beevik/etree#readme)).
 
 Because this library uses [fasthttp](https://github.com/valyala/fasthttp#readme) rather than [net/http](https://golang.org/pkg/net/http/) it is about 10x faster than competing libraries. It is also only about 100 LOC compared to the massive codebases of competing projects.
-
-## Compare the REST client competition
-
-* [grequests](https://github.com/levigross/grequests)
-* [resty](https://github.com/go-resty/resty)
