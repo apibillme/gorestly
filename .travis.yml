@@ -2,6 +2,7 @@ language: go
 
 # Only use latest go version
 go:
+  - "1.10.x"
   - "1.11.x"
 
 # Only clone the most recent commit.
