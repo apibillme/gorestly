@@ -73,7 +73,7 @@ func TestSpec(t *testing.T) {
 					So(err, ShouldBeError)
 				})
 				Convey("Failure Stream", func() {
-					_, err := GetXML(req, "https://github.com/apibillme/requestly")
+					_, err := GetXML(req, "https://github.com/apibillme/restly")
 					So(err, ShouldBeError)
 				})
 			})
