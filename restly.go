@@ -1,4 +1,4 @@
-package gorestly
+package restly
 
 import (
 	"github.com/tidwall/gjson"
