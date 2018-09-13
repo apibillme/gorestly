@@ -24,7 +24,13 @@ func requestXML(req *fasthttp.Request, url string, query string) (*etree.Documen
 		return nil, err
 	}
 	q := urlQ.Query().Encode()
-	req.SetRequestURI(url + `?` + q)
+	var urlSubmit string
+	if q != "" {
+		urlSubmit = url + `?` + q
+	} else {
+		urlSubmit = url
+	}
+	req.SetRequestURI(urlSubmit)
 	res := &fasthttp.Response{}
 	err = fasthttp.Do(req, res)
 	doc := etree.NewDocument()
@@ -44,7 +50,13 @@ func requestJSON(req *fasthttp.Request, url string, query string) (gjson.Result,
 		return gjson.Parse(""), err
 	}
 	q := urlQ.Query().Encode()
-	req.SetRequestURI(url + `?` + q)
+	var urlSubmit string
+	if q != "" {
+		urlSubmit = url + `?` + q
+	} else {
+		urlSubmit = url
+	}
+	req.SetRequestURI(urlSubmit)
 	res := &fasthttp.Response{}
 	err = fasthttp.Do(req, res)
 	if err != nil {
