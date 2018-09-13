@@ -6,17 +6,27 @@ import (
 	"github.com/valyala/fasthttp"
 
 	"github.com/beevik/etree"
+
+	uri "net/url"
 )
+
+// for stubbing
+var uriParse = uri.Parse
 
 // New - create fasthttp request
 func New() *fasthttp.Request {
 	return &fasthttp.Request{}
 }
 
-func requestXML(req *fasthttp.Request, uri string) (*etree.Document, error) {
-	req.SetRequestURI(uri)
+func requestXML(req *fasthttp.Request, url string, query string) (*etree.Document, error) {
+	urlQ, err := uriParse(url + query)
+	if err != nil {
+		return nil, err
+	}
+	q := urlQ.Query().Encode()
+	req.SetRequestURI(url + `?` + q)
 	res := &fasthttp.Response{}
-	err := fasthttp.Do(req, res)
+	err = fasthttp.Do(req, res)
 	doc := etree.NewDocument()
 	if err != nil {
 		return doc, err
@@ -28,10 +38,15 @@ func requestXML(req *fasthttp.Request, uri string) (*etree.Document, error) {
 	return doc, nil
 }
 
-func requestJSON(req *fasthttp.Request, uri string) (gjson.Result, error) {
-	req.SetRequestURI(uri)
+func requestJSON(req *fasthttp.Request, url string, query string) (gjson.Result, error) {
+	urlQ, err := uriParse(url + query)
+	if err != nil {
+		return gjson.Parse(""), err
+	}
+	q := urlQ.Query().Encode()
+	req.SetRequestURI(url + `?` + q)
 	res := &fasthttp.Response{}
-	err := fasthttp.Do(req, res)
+	err = fasthttp.Do(req, res)
 	if err != nil {
 		return gjson.Parse(""), err
 	}
@@ -55,61 +70,61 @@ func setXMLRequest(req *fasthttp.Request, method string, body string) *fasthttp.
 }
 
 // GetJSON - make get JSON and return searchable JSON
-func GetJSON(req *fasthttp.Request, uri string) (gjson.Result, error) {
+func GetJSON(req *fasthttp.Request, url string, query string) (gjson.Result, error) {
 	req = setJSONRequest(req, "GET", "")
-	return requestJSON(req, uri)
+	return requestJSON(req, url, query)
 }
 
 // DeleteJSON - make delete JSON and return searchable JSON
-func DeleteJSON(req *fasthttp.Request, uri string) (gjson.Result, error) {
+func DeleteJSON(req *fasthttp.Request, url string, query string) (gjson.Result, error) {
 	req = setJSONRequest(req, "DELETE", "")
-	return requestJSON(req, uri)
+	return requestJSON(req, url, query)
 }
 
 // PutJSON - make put JSON and return searchable JSON
-func PutJSON(req *fasthttp.Request, uri string, body string) (gjson.Result, error) {
+func PutJSON(req *fasthttp.Request, url string, body string, query string) (gjson.Result, error) {
 	req = setJSONRequest(req, "PUT", body)
-	return requestJSON(req, uri)
+	return requestJSON(req, url, query)
 }
 
 // PostJSON - make post JSON and return searchable JSON
-func PostJSON(req *fasthttp.Request, uri string, body string) (gjson.Result, error) {
+func PostJSON(req *fasthttp.Request, url string, body string, query string) (gjson.Result, error) {
 	req = setJSONRequest(req, "POST", body)
-	return requestJSON(req, uri)
+	return requestJSON(req, url, query)
 }
 
 // PatchJSON - make patch JSON and return searchable JSON
-func PatchJSON(req *fasthttp.Request, uri string, body string) (gjson.Result, error) {
+func PatchJSON(req *fasthttp.Request, url string, body string, query string) (gjson.Result, error) {
 	req = setJSONRequest(req, "PATCH", body)
-	return requestJSON(req, uri)
+	return requestJSON(req, url, query)
 }
 
 // GetXML - make get XML and return searchable XML
-func GetXML(req *fasthttp.Request, uri string) (*etree.Document, error) {
+func GetXML(req *fasthttp.Request, url string, query string) (*etree.Document, error) {
 	req = setXMLRequest(req, "GET", "")
-	return requestXML(req, uri)
+	return requestXML(req, url, query)
 }
 
 // DeleteXML - make delete XML and return searchable XML
-func DeleteXML(req *fasthttp.Request, uri string) (*etree.Document, error) {
+func DeleteXML(req *fasthttp.Request, url string, query string) (*etree.Document, error) {
 	req = setXMLRequest(req, "DELETE", "")
-	return requestXML(req, uri)
+	return requestXML(req, url, query)
 }
 
 // PutXML - make put XML and return searchable XML
-func PutXML(req *fasthttp.Request, uri string, body string) (*etree.Document, error) {
+func PutXML(req *fasthttp.Request, url string, body string, query string) (*etree.Document, error) {
 	req = setXMLRequest(req, "PUT", body)
-	return requestXML(req, uri)
+	return requestXML(req, url, query)
 }
 
 // PostXML - make post XML and return searchable XML
-func PostXML(req *fasthttp.Request, uri string, body string) (*etree.Document, error) {
+func PostXML(req *fasthttp.Request, url string, body string, query string) (*etree.Document, error) {
 	req = setXMLRequest(req, "POST", body)
-	return requestXML(req, uri)
+	return requestXML(req, url, query)
 }
 
 // PatchXML - make patch XML and return searchable XML
-func PatchXML(req *fasthttp.Request, uri string, body string) (*etree.Document, error) {
+func PatchXML(req *fasthttp.Request, url string, body string, query string) (*etree.Document, error) {
 	req = setXMLRequest(req, "PATCH", body)
-	return requestXML(req, uri)
+	return requestXML(req, url, query)
 }

@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:bd336ef5505b5ec83e64d621bb10b594883ffc4c05002d37bffcfe683e78d682"
+  name = "github.com/apibillme/stubby"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5f859cd6c3aff4dbc36ea3f0d0094af70e079620"
+  version = "1.0.0"
+
+[[projects]]
   branch = "master"
   digest = "1:67c8fd38cd67297657a32ef729a12795bb4c263cfa3e15fa5c2de255e9339670"
   name = "github.com/beevik/etree"
@@ -109,6 +117,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/apibillme/stubby",
     "github.com/beevik/etree",
     "github.com/smartystreets/goconvey/convey",
     "github.com/tidwall/gjson",

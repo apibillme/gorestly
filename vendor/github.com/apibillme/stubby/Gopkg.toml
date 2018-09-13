@@ -24,22 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-[[constraint]]
-  name = "github.com/valyala/fasthttp"
-  branch = "master"
-
-[[constraint]]
-  name = "github.com/tidwall/gjson"
-  version = "v1.1.3"
-
-[[constraint]]
-  name = "github.com/beevik/etree"
-  branch = "master"
-
-[[constraint]]
-  name = "github.com/apibillme/stubby"
-  version = "1.0.0"
-
 [prune]
   go-tests = true
   unused-packages = true
