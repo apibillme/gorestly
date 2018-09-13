@@ -7,7 +7,8 @@ This fast REST client combines [fasthttp](https://github.com/valyala/fasthttp#re
 
 ## Features:
 * Fully configurable fasthttp.Request struct
-* Auto encoding REST routes with client libraries ([gjson](https://github.com/tidwall/gjson#readme) & [etree](https://github.com/beevik/etree#readme)) with support for problem errors [RFC7807](https://tools.ietf.org/html/rfc7807)
+* Automatic encoding REST routes with client libraries ([gjson](https://github.com/tidwall/gjson#readme) & [etree](https://github.com/beevik/etree#readme)) with support for problem errors [RFC7807](https://tools.ietf.org/html/rfc7807)
+* Automatic encoding for query string parameters
 * About 100 LOC
 * About 10x faster than using net/http
 
