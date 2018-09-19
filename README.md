@@ -25,25 +25,25 @@ jsonBody := `{"key":"value"}`
 
 xmlBody := `<?xml version="1.0" encoding="UTF-8"?><People><Person name="Jon"/></People></xml>`
 
-res, code, err := restly.GetJSON(req, "https://mockbin.com/request", "?foo=bar")
+res, statusCode, err := restly.GetJSON(req, "https://mockbin.com/request", "?foo=bar")
 	
-res, code, err := restly.DeleteJSON(req, "https://mockbin.com/request", "?foo=bar")
+res, statusCode, err := restly.DeleteJSON(req, "https://mockbin.com/request", "?foo=bar")
 	
-res, code, err := restly.PutJSON(req, "https://mockbin.com/request", jsonBody, "?foo=bar")
+res, statusCode, err := restly.PutJSON(req, "https://mockbin.com/request", jsonBody, "?foo=bar")
 	
-res, code, err := restly.PostJSON(req, "https://mockbin.com/request", jsonBody, "?foo=bar")
+res, statusCode, err := restly.PostJSON(req, "https://mockbin.com/request", jsonBody, "?foo=bar")
 	
-res, code, err := restly.PatchJSON(req, "https://mockbin.com/request", jsonBody, "?foo=bar")
+res, statusCode, err := restly.PatchJSON(req, "https://mockbin.com/request", jsonBody, "?foo=bar")
 
-res, code, err := restly.GetXML(req, "https://mockbin.com/request", "?foo=bar")
+res, statusCode, err := restly.GetXML(req, "https://mockbin.com/request", "?foo=bar")
 	
-res, code, err := restly.DeleteXML(req, "https://mockbin.com/request", "?foo=bar")
+res, statusCode, err := restly.DeleteXML(req, "https://mockbin.com/request", "?foo=bar")
 	
-res, code, err := restly.PutXML(req, "https://mockbin.com/request", xmlBody, "?foo=bar")
+res, statusCode, err := restly.PutXML(req, "https://mockbin.com/request", xmlBody, "?foo=bar")
 	
-res, code, err := restly.PostXML(req, "https://mockbin.com/request", xmlBody, "?foo=bar")
+res, statusCode, err := restly.PostXML(req, "https://mockbin.com/request", xmlBody, "?foo=bar")
 	
-res, code, err := restly.PatchXML(req, "https://mockbin.com/request", xmlBody, "?foo=bar")
+res, statusCode, err := restly.PatchXML(req, "https://mockbin.com/request", xmlBody, "?foo=bar")
 ```
 
 ## Motivation
