@@ -83,61 +83,61 @@ func setXMLRequest(req *fasthttp.Request, method string, body string) *fasthttp.
 	return req
 }
 
-// GetJSON - make get JSON and return searchable JSON
+// GetJSON - make get JSON and return searchable JSON and Status Code
 func GetJSON(req *fasthttp.Request, url string, query string) (gjson.Result, int, error) {
 	req = setJSONRequest(req, "GET", "")
 	return requestJSON(req, url, query)
 }
 
-// DeleteJSON - make delete JSON and return searchable JSON
+// DeleteJSON - make delete JSON and return searchable JSON and Status Code
 func DeleteJSON(req *fasthttp.Request, url string, query string) (gjson.Result, int, error) {
 	req = setJSONRequest(req, "DELETE", "")
 	return requestJSON(req, url, query)
 }
 
-// PutJSON - make put JSON and return searchable JSON
+// PutJSON - make put JSON and return searchable JSON and Status Code
 func PutJSON(req *fasthttp.Request, url string, body string, query string) (gjson.Result, int, error) {
 	req = setJSONRequest(req, "PUT", body)
 	return requestJSON(req, url, query)
 }
 
-// PostJSON - make post JSON and return searchable JSON
+// PostJSON - make post JSON and return searchable JSON and Status Code
 func PostJSON(req *fasthttp.Request, url string, body string, query string) (gjson.Result, int, error) {
 	req = setJSONRequest(req, "POST", body)
 	return requestJSON(req, url, query)
 }
 
-// PatchJSON - make patch JSON and return searchable JSON
+// PatchJSON - make patch JSON and return searchable JSON and Status Code
 func PatchJSON(req *fasthttp.Request, url string, body string, query string) (gjson.Result, int, error) {
 	req = setJSONRequest(req, "PATCH", body)
 	return requestJSON(req, url, query)
 }
 
-// GetXML - make get XML and return searchable XML
+// GetXML - make get XML and return searchable XML and Status Code
 func GetXML(req *fasthttp.Request, url string, query string) (*etree.Document, int, error) {
 	req = setXMLRequest(req, "GET", "")
 	return requestXML(req, url, query)
 }
 
-// DeleteXML - make delete XML and return searchable XML
+// DeleteXML - make delete XML and return searchable XML and Status Code
 func DeleteXML(req *fasthttp.Request, url string, query string) (*etree.Document, int, error) {
 	req = setXMLRequest(req, "DELETE", "")
 	return requestXML(req, url, query)
 }
 
-// PutXML - make put XML and return searchable XML
+// PutXML - make put XML and return searchable XML and Status Code
 func PutXML(req *fasthttp.Request, url string, body string, query string) (*etree.Document, int, error) {
 	req = setXMLRequest(req, "PUT", body)
 	return requestXML(req, url, query)
 }
 
-// PostXML - make post XML and return searchable XML
+// PostXML - make post XML and return searchable XML and Status Code
 func PostXML(req *fasthttp.Request, url string, body string, query string) (*etree.Document, int, error) {
 	req = setXMLRequest(req, "POST", body)
 	return requestXML(req, url, query)
 }
 
-// PatchXML - make patch XML and return searchable XML
+// PatchXML - make patch XML and return searchable XML and Status Code
 func PatchXML(req *fasthttp.Request, url string, body string, query string) (*etree.Document, int, error) {
 	req = setXMLRequest(req, "PATCH", body)
 	return requestXML(req, url, query)
