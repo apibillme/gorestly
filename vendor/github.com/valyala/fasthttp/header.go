@@ -20,9 +20,10 @@ import (
 type ResponseHeader struct {
 	noCopy noCopy
 
-	disableNormalizing bool
-	noHTTP11           bool
-	connectionClose    bool
+	disableNormalizing   bool
+	noHTTP11             bool
+	connectionClose      bool
+	noDefaultContentType bool
 
 	statusCode         int
 	contentLength      int
@@ -50,7 +51,6 @@ type RequestHeader struct {
 	disableNormalizing bool
 	noHTTP11           bool
 	connectionClose    bool
-	isGet              bool
 
 	// These two fields have been moved close to other bool fields
 	// for reducing RequestHeader object size.
@@ -154,12 +154,6 @@ func (h *ResponseHeader) ResetConnectionClose() {
 // ConnectionClose returns true if 'Connection: close' header is set.
 func (h *RequestHeader) ConnectionClose() bool {
 	h.parseRawHeaders()
-	return h.connectionClose
-}
-
-func (h *RequestHeader) connectionCloseFast() bool {
-	// h.parseRawHeaders() isn't called for performance reasons.
-	// Use ConnectionClose for triggering raw headers parsing.
 	return h.connectionClose
 }
 
@@ -283,7 +277,7 @@ func (h *ResponseHeader) isCompressibleContentType() bool {
 // ContentType returns Content-Type header value.
 func (h *ResponseHeader) ContentType() []byte {
 	contentType := h.contentType
-	if len(h.contentType) == 0 {
+	if !h.noDefaultContentType && len(h.contentType) == 0 {
 		contentType = defaultContentType
 	}
 	return contentType
@@ -515,11 +509,7 @@ func (h *RequestHeader) SetRequestURIBytes(requestURI []byte) {
 
 // IsGet returns true if request method is GET.
 func (h *RequestHeader) IsGet() bool {
-	// Optimize fast path for GET requests.
-	if !h.isGet {
-		h.isGet = bytes.Equal(h.Method(), strGet)
-	}
-	return h.isGet
+	return bytes.Equal(h.Method(), strGet)
 }
 
 // IsPost returns true if request method is POST.
@@ -534,10 +524,6 @@ func (h *RequestHeader) IsPut() bool {
 
 // IsHead returns true if request method is HEAD.
 func (h *RequestHeader) IsHead() bool {
-	// Fast path
-	if h.isGet {
-		return false
-	}
 	return bytes.Equal(h.Method(), strHead)
 }
 
@@ -652,6 +638,7 @@ func (h *ResponseHeader) DisableNormalizing() {
 // Reset clears response header.
 func (h *ResponseHeader) Reset() {
 	h.disableNormalizing = false
+	h.noDefaultContentType = false
 	h.resetSkipNormalize()
 }
 
@@ -679,7 +666,6 @@ func (h *RequestHeader) Reset() {
 func (h *RequestHeader) resetSkipNormalize() {
 	h.noHTTP11 = false
 	h.connectionClose = false
-	h.isGet = false
 
 	h.contentLength = 0
 	h.contentLengthBytes = h.contentLengthBytes[:0]
@@ -705,6 +691,7 @@ func (h *ResponseHeader) CopyTo(dst *ResponseHeader) {
 	dst.disableNormalizing = h.disableNormalizing
 	dst.noHTTP11 = h.noHTTP11
 	dst.connectionClose = h.connectionClose
+	dst.noDefaultContentType = h.noDefaultContentType
 
 	dst.statusCode = h.statusCode
 	dst.contentLength = h.contentLength
@@ -722,7 +709,6 @@ func (h *RequestHeader) CopyTo(dst *RequestHeader) {
 	dst.disableNormalizing = h.disableNormalizing
 	dst.noHTTP11 = h.noHTTP11
 	dst.connectionClose = h.connectionClose
-	dst.isGet = h.isGet
 
 	dst.contentLength = h.contentLength
 	dst.contentLengthBytes = append(dst.contentLengthBytes[:0], h.contentLengthBytes...)
@@ -1239,6 +1225,12 @@ func (h *RequestHeader) peek(key []byte) []byte {
 		return peekArgBytes(h.h, key)
 	case "Content-Length":
 		return h.contentLengthBytes
+	case "Cookie":
+		if h.cookiesCollected {
+			return appendRequestCookieBytes(nil, h.cookies)
+		} else {
+			return peekArgBytes(h.h, key)
+		}
 	default:
 		return peekArgBytes(h.h, key)
 	}
@@ -1363,9 +1355,12 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 	h.resetSkipNormalize()
 	b, err := r.Peek(n)
 	if len(b) == 0 {
-		// treat all errors on the first byte read as EOF
-		if n == 1 || err == io.EOF {
-			return io.EOF
+		if err == io.EOF {
+			return err
+		}
+
+		if err == nil {
+			panic("bufio.Reader.Peek() returned nil, nil")
 		}
 
 		// This is for go 1.6 bug. See https://github.com/golang/go/issues/14121 .
@@ -1770,36 +1765,52 @@ func (h *ResponseHeader) parseHeaders(buf []byte) (int, error) {
 	var err error
 	var kv *argsKV
 	for s.next() {
-		switch string(s.key) {
-		case "Content-Type":
-			h.contentType = append(h.contentType[:0], s.value...)
-		case "Server":
-			h.server = append(h.server[:0], s.value...)
-		case "Content-Length":
-			if h.contentLength != -1 {
-				if h.contentLength, err = parseContentLength(s.value); err != nil {
-					h.contentLength = -2
-				} else {
-					h.contentLengthBytes = append(h.contentLengthBytes[:0], s.value...)
+		if len(s.key) > 0 {
+			switch s.key[0] | 0x20 {
+			case 'c':
+				if caseInsensitiveCompare(s.key, strContentType) {
+					h.contentType = append(h.contentType[:0], s.value...)
+					continue
+				} 
+				if caseInsensitiveCompare(s.key, strContentLength) {
+					if h.contentLength != -1 {
+						if h.contentLength, err = parseContentLength(s.value); err != nil {
+							h.contentLength = -2
+						} else {
+							h.contentLengthBytes = append(h.contentLengthBytes[:0], s.value...)
+						}
+					}
+					continue
+				}
+				if caseInsensitiveCompare(s.key, strConnection) {
+					if bytes.Equal(s.value, strClose) {
+						h.connectionClose = true
+					} else {
+						h.connectionClose = false
+						h.h = appendArgBytes(h.h, s.key, s.value)
+					}
+					continue
+				}
+			case 's':
+				if caseInsensitiveCompare(s.key, strServer) {
+					h.server = append(h.server[:0], s.value...)
+					continue
+				}
+				if caseInsensitiveCompare(s.key, strSetCookie) {
+					h.cookies, kv = allocArg(h.cookies)
+					kv.key = getCookieKey(kv.key, s.value)
+					kv.value = append(kv.value[:0], s.value...)
+					continue
+				}
+			case 't':
+				if caseInsensitiveCompare(s.key, strTransferEncoding) {
+					if !bytes.Equal(s.value, strIdentity) {
+						h.contentLength = -1
+						h.h = setArgBytes(h.h, strTransferEncoding, strChunked)
+					}
+					continue
 				}
 			}
-		case "Transfer-Encoding":
-			if !bytes.Equal(s.value, strIdentity) {
-				h.contentLength = -1
-				h.h = setArgBytes(h.h, strTransferEncoding, strChunked)
-			}
-		case "Set-Cookie":
-			h.cookies, kv = allocArg(h.cookies)
-			kv.key = getCookieKey(kv.key, s.value)
-			kv.value = append(kv.value[:0], s.value...)
-		case "Connection":
-			if bytes.Equal(s.value, strClose) {
-				h.connectionClose = true
-			} else {
-				h.connectionClose = false
-				h.h = appendArgBytes(h.h, s.key, s.value)
-			}
-		default:
 			h.h = appendArgBytes(h.h, s.key, s.value)
 		}
 	}
@@ -1832,36 +1843,53 @@ func (h *RequestHeader) parseHeaders(buf []byte) (int, error) {
 	s.disableNormalizing = h.disableNormalizing
 	var err error
 	for s.next() {
-		switch string(s.key) {
-		case "Host":
-			h.host = append(h.host[:0], s.value...)
-		case "User-Agent":
-			h.userAgent = append(h.userAgent[:0], s.value...)
-		case "Content-Type":
-			h.contentType = append(h.contentType[:0], s.value...)
-		case "Content-Length":
-			if h.contentLength != -1 {
-				if h.contentLength, err = parseContentLength(s.value); err != nil {
-					h.contentLength = -2
-				} else {
-					h.contentLengthBytes = append(h.contentLengthBytes[:0], s.value...)
+		if len(s.key) > 0 {
+			switch s.key[0] | 0x20 {
+			case 'h':
+				if caseInsensitiveCompare(s.key, strHost) {
+					h.host = append(h.host[:0], s.value...)
+					continue
+				}
+			case 'u':
+				if caseInsensitiveCompare(s.key, strUserAgent) {
+					h.userAgent = append(h.userAgent[:0], s.value...)
+					continue
+				}
+			case 'c':
+				if caseInsensitiveCompare(s.key, strContentType) {
+					h.contentType = append(h.contentType[:0], s.value...)
+					continue
+				}
+				if caseInsensitiveCompare(s.key, strContentLength) {
+					if h.contentLength != -1 {
+						if h.contentLength, err = parseContentLength(s.value); err != nil {
+							h.contentLength = -2
+						} else {
+							h.contentLengthBytes = append(h.contentLengthBytes[:0], s.value...)
+						}
+					}
+					continue
+				}
+				if caseInsensitiveCompare(s.key, strConnection) {
+					if bytes.Equal(s.value, strClose) {
+						h.connectionClose = true
+					} else {
+						h.connectionClose = false
+						h.h = appendArgBytes(h.h, s.key, s.value)
+					}
+					continue
+				}
+			case 't':
+				if caseInsensitiveCompare(s.key, strTransferEncoding) {
+					if !bytes.Equal(s.value, strIdentity) {
+						h.contentLength = -1
+						h.h = setArgBytes(h.h, strTransferEncoding, strChunked)
+					}
+					continue
 				}
 			}
-		case "Transfer-Encoding":
-			if !bytes.Equal(s.value, strIdentity) {
-				h.contentLength = -1
-				h.h = setArgBytes(h.h, strTransferEncoding, strChunked)
-			}
-		case "Connection":
-			if bytes.Equal(s.value, strClose) {
-				h.connectionClose = true
-			} else {
-				h.connectionClose = false
-				h.h = appendArgBytes(h.h, s.key, s.value)
-			}
-		default:
-			h.h = appendArgBytes(h.h, s.key, s.value)
 		}
+		h.h = appendArgBytes(h.h, s.key, s.value)
 	}
 	if s.err != nil {
 		h.connectionClose = true

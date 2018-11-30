@@ -14,7 +14,7 @@ func GetDate() int {
 	return timeNow().Day()
 }
 
-stubs := gostub.Stub(&timeNow, func() time.Time {
+stubs := stubby.Stub(&timeNow, func() time.Time {
   return time.Date(2015, 6, 1, 0, 0, 0, 0, time.UTC)
 })
 defer stubs.Reset()
@@ -25,6 +25,6 @@ defer stubs.Reset()
 var osHostname = osHostname
 
 // Test code:
-stubs := gostub.StubFunc(&osHostname, "fakehost", nil)
+stubs := stubby.StubFunc(&osHostname, "fakehost", nil)
 defer stubs.Reset()
 ```
