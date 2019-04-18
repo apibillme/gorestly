@@ -67,6 +67,28 @@ func requestJSON(req *fasthttp.Request, url string, query string) (gjson.Result,
 	return gjson.ParseBytes(res.Body()), code, nil
 }
 
+func requestGeneric(req *fasthttp.Request, url string, query string) ([]byte, int, error) {
+	urlQ, err := uriParse(url + query)
+	if err != nil {
+		return nil, 0, err
+	}
+	q := urlQ.Query().Encode()
+	var urlSubmit string
+	if q != "" {
+		urlSubmit = url + `?` + q
+	} else {
+		urlSubmit = url
+	}
+	req.SetRequestURI(urlSubmit)
+	res := &fasthttp.Response{}
+	err = fasthttp.Do(req, res)
+	if err != nil {
+		return nil, 0, err
+	}
+	code := res.StatusCode()
+	return res.Body(), code, nil
+}
+
 func setJSONRequest(req *fasthttp.Request, method string, body string) *fasthttp.Request {
 	req.Header.SetCanonical([]byte("Content-Type"), []byte("application/problem+json"))
 	req.Header.Set("Accept", "application/json")
@@ -81,6 +103,20 @@ func setXMLRequest(req *fasthttp.Request, method string, body string) *fasthttp.
 	req.Header.SetMethodBytes([]byte(method))
 	req.SetBodyString(body)
 	return req
+}
+
+func setGenericRequest(req *fasthttp.Request, method string, body string, contentType string, acceptType string) *fasthttp.Request {
+	req.Header.SetCanonical([]byte("Content-Type"), []byte(contentType))
+	req.Header.Set("Accept", acceptType)
+	req.Header.SetMethodBytes([]byte(method))
+	req.SetBodyString(body)
+	return req
+}
+
+// Generic - make generic request
+func Generic(req *fasthttp.Request, url string, body string, query string, method string, contentType string, acceptType string) ([]byte, int, error) {
+	req = setGenericRequest(req, method, body, contentType, acceptType)
+	return requestGeneric(req, url, query)
 }
 
 // GetJSON - make get JSON and return searchable JSON and Status Code

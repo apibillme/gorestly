@@ -2,6 +2,8 @@
 github.com/apibillme/stubby
 # github.com/beevik/etree v1.0.1
 github.com/beevik/etree
+# github.com/gopherjs/gopherjs v0.0.0-20190411002643-bd77b112433e
+github.com/gopherjs/gopherjs/js
 # github.com/jtolds/gls v4.2.1+incompatible
 github.com/jtolds/gls
 # github.com/klauspost/compress v1.4.0

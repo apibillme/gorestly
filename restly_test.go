@@ -14,10 +14,10 @@ func TestSpec(t *testing.T) {
 	Convey("New", t, func() {
 		req := New()
 
-		Convey("JSON", func() {
+		Convey("JSON", t, func() {
 			body := `{"key":"value"}`
 
-			Convey("GetJSON", func() {
+			Convey("GetJSON", t, func() {
 				Convey("Success - 200", func() {
 					res, code, err := GetJSON(req, "https://mockbin.com/request", `?foo=http://foobar.com&bar=baz`)
 					So(err, ShouldBeNil)
@@ -43,13 +43,13 @@ func TestSpec(t *testing.T) {
 				})
 			})
 
-			Convey("DeleteJSON", func() {
+			Convey("DeleteJSON", t, func() {
 				res, _, err := DeleteJSON(req, "https://mockbin.com/request", "")
 				So(err, ShouldBeNil)
 				So(res.Get("method").String(), ShouldResemble, "DELETE")
 			})
 
-			Convey("PutJSON", func() {
+			Convey("PutJSON", t, func() {
 				res, _, err := PutJSON(req, "https://mockbin.com/request", body, "")
 				So(err, ShouldBeNil)
 				So(res.Get("method").String(), ShouldResemble, "PUT")
@@ -57,7 +57,7 @@ func TestSpec(t *testing.T) {
 				So(extraParsing.Get("key").String(), ShouldResemble, "value")
 			})
 
-			Convey("PostJSON", func() {
+			Convey("PostJSON", t, func() {
 				res, _, err := PostJSON(req, "https://mockbin.com/request", body, "")
 				So(err, ShouldBeNil)
 				So(res.Get("method").String(), ShouldResemble, "POST")
@@ -65,7 +65,7 @@ func TestSpec(t *testing.T) {
 				So(extraParsing.Get("key").String(), ShouldResemble, "value")
 			})
 
-			Convey("PatchJSON", func() {
+			Convey("PatchJSON", t, func() {
 				res, _, err := PatchJSON(req, "https://mockbin.com/request", body, "")
 				So(err, ShouldBeNil)
 				So(res.Get("method").String(), ShouldResemble, "PATCH")
@@ -74,10 +74,10 @@ func TestSpec(t *testing.T) {
 			})
 		})
 
-		Convey("XML", func() {
+		Convey("XML", t, func() {
 			body := `<?xml version="1.0" encoding="UTF-8"?><People><Person name="Jon"/><Person name="Sally"/></People></xml>`
 
-			Convey("GetXML", func() {
+			Convey("GetXML", t, func() {
 				Convey("Success", func() {
 					res, _, err := GetXML(req, "https://mockbin.com/request", `?foo=http://foobar.com&bar=baz`)
 					So(err, ShouldBeNil)
@@ -101,14 +101,14 @@ func TestSpec(t *testing.T) {
 				})
 			})
 
-			Convey("DeleteXML", func() {
+			Convey("DeleteXML", t, func() {
 				res, _, err := DeleteXML(req, "https://mockbin.com/request", "")
 				So(err, ShouldBeNil)
 				method := res.FindElement("/response/method").Text()
 				So(method, ShouldResemble, "DELETE")
 			})
 
-			Convey("PutXML", func() {
+			Convey("PutXML", t, func() {
 				res, _, err := PutXML(req, "https://mockbin.com/request", body, "")
 				So(err, ShouldBeNil)
 				method := res.FindElement("/response/method").Text()
@@ -117,7 +117,7 @@ func TestSpec(t *testing.T) {
 				So(xml, ShouldResemble, body)
 			})
 
-			Convey("PostXML", func() {
+			Convey("PostXML", t, func() {
 				res, _, err := PostXML(req, "https://mockbin.com/request", body, "")
 				So(err, ShouldBeNil)
 				method := res.FindElement("/response/method").Text()
@@ -126,7 +126,7 @@ func TestSpec(t *testing.T) {
 				So(xml, ShouldResemble, body)
 			})
 
-			Convey("PatchXML", func() {
+			Convey("PatchXML", t, func() {
 				res, _, err := PatchXML(req, "https://mockbin.com/request", body, "")
 				So(err, ShouldBeNil)
 				method := res.FindElement("/response/method").Text()
